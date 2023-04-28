@@ -58,13 +58,9 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <?php
-
-
-
+$title  = "Update blog";
+include("header.php");
 ?>
-
-<?php include("header.html") ?>
-
 
 <!-- Content Wrapper. Contains page content -->
 

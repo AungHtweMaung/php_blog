@@ -7,7 +7,11 @@ if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
 
 ?>
 
-<?php include("header.html") ?>
+<?php
+$title = "Blog Site";
+include("header.php");
+
+?>
 
 
 <!-- Content Wrapper. Contains page content -->
@@ -21,39 +25,39 @@ if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
 
     <?php
 
-      if (!empty($_GET["pageno"])) {
-        $pageno = $_GET["pageno"];
-      } else {
-        $pageno = 1;
-      }
+    if (!empty($_GET["pageno"])) {
+      $pageno = $_GET["pageno"];
+    } else {
+      $pageno = 1;
+    }
 
-      $no_of_records_per_page = 2;  // records 2 ခုဆီပြမှာ 
-      // below formula is that start taking the frist record from db.
-      $offset = ($pageno - 1) * $no_of_records_per_page;
+    $no_of_records_per_page = 3;  // records 2 ခုဆီပြမှာ 
+    // below formula is that start taking the frist record from db.
+    $offset = ($pageno - 1) * $no_of_records_per_page;
 
-      if (empty($_POST["search"])) {
-        $stmt  = $pdo->prepare('SELECT * FROM posts ORDER BY id DESC');
-        $stmt->execute();
-        $rawResult = $stmt->fetchAll(); // get all records from db table 
+    if (empty($_POST["search"])) {
+      $stmt  = $pdo->prepare('SELECT * FROM posts ORDER BY id DESC');
+      $stmt->execute();
+      $rawResult = $stmt->fetchAll(); // get all records from db table 
 
-        $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
-        // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
-        $stmt  = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
-        $stmt->execute();
-        $result = $stmt->fetchAll(); 
-      } else {
-        $searchKey = $_POST["search"];
-        $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
-        $stmt->execute();
-        $rawResult = $stmt->fetchAll(); // get all records from db table 
+      $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
+      // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
+      $stmt  = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
+      $stmt->execute();
+      $result = $stmt->fetchAll();
+    } else {
+      $searchKey = $_POST["search"];
+      $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
+      $stmt->execute();
+      $rawResult = $stmt->fetchAll(); // get all records from db table 
 
-        $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
-        // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
-        $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
-        $stmt->execute();
-        $result = $stmt->fetchAll(); 
-      }
-    
+      $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
+      // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
+      $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
+      $stmt->execute();
+      $result = $stmt->fetchAll();
+    }
+
 
 
 
@@ -98,12 +102,24 @@ if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
       <nav aria-label="Page navigation example">
         <ul class="pagination float-right mt-3">
           <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
-          <li class="page-item <?php if($pageno<=1){echo "disabled";} ?>">
-            <a class="page-link" href="?pageno=<?php if($pageno<=1) {echo "#";}else{echo $pageno-1;} ?>">Previous</a>
+          <li class="page-item <?php if ($pageno <= 1) {
+                                  echo "disabled";
+                                } ?>">
+            <a class="page-link" href="?pageno=<?php if ($pageno <= 1) {
+                                                  echo "#";
+                                                } else {
+                                                  echo $pageno - 1;
+                                                } ?>">Previous</a>
           </li>
-          <li class="page-item"><a class="page-link" href="#"><?php echo $pageno;?></a></li>
-          <li class="page-item <?php if($pageno>=$total_pages){echo "disabled";} ?>">
-            <a class="page-link" href="?pageno=<?php if($pageno>=$total_pages){echo '#';}else{echo $pageno+1;}?>">Next</a>
+          <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
+          <li class="page-item <?php if ($pageno >= $total_pages) {
+                                  echo "disabled";
+                                } ?>">
+            <a class="page-link" href="?pageno=<?php if ($pageno >= $total_pages) {
+                                                  echo '#';
+                                                } else {
+                                                  echo $pageno + 1;
+                                                } ?>">Next</a>
           </li>
           <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
         </ul>

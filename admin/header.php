@@ -8,7 +8,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog | Starter</title>
+    <title><?php echo $title; ?></title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -38,8 +38,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                         <i class="fas fa-search"></i>
                     </a>
+                    <?php
+                        // $_SERVER => current url path တွေကို ယူနိုင်တဲ့ superglobal variable.
+                        // array ကို explode နဲ့ခွဲထုတ်ပြီး နောက်ဆုံး item ကိုယူလိုက်တယ်။  
+                       $link = $_SERVER["REQUEST_URI"];
+                       $link_array = explode("/", $link);
+                       $page = end($link_array);
+                       
+                    ?>
                     <div class="navbar-search-block">
-                        <form class="form-inline" action="index.php" method="post">
+                        <form class="form-inline" action="<?php echo $page=='index.php'? 'index.php': 'user_manage.php'; ?>" method="post">
                             <div class="input-group input-group-sm">
                                 <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search"
                                     aria-label="Search">
@@ -92,6 +100,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <i class="nav-icon fas fa-th"></i>
                                 <p>
                                     Blogs
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="user_manage.php" class="nav-link">
+                                <i class="nav-icon fas fa-user"></i>
+                                <p>
+                                    User Accounts
                                 </p>
                             </a>
                         </li>

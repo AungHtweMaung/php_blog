@@ -1,7 +1,7 @@
 <?php
 require("../config/config.php");
 session_start();
-if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
+if (empty($_SESSION["user_id"]) && empty($_SESSION["    ged_in"])) {
     header("location: ./login.php");
 }
 
@@ -45,7 +45,10 @@ if ($_POST) {
 
 ?>
 
-<?php include("header.html") ?>
+<?php 
+$title = "Create blog";
+include("header.php") 
+?>
 
 
 <!-- Content Wrapper. Contains page content -->
