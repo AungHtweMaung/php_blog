@@ -10,14 +10,10 @@
 
 <body>
     <?php
-    $fruits = ["apple", "orange", "mango"];
-    $arr = [];
-    foreach ($fruits as $value) {
-        $arr[] = $value;
-    }
-    print_r($arr);
-
+    
+    echo $_COOKIE["search"]
     ?>
+    
 </body>
 
 </html>

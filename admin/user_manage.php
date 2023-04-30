@@ -4,6 +4,18 @@ session_start();
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
 }
+if ($_SESSION["role"] != 1) {
+    header("location: login.php");
+}
+
+if (!empty($_POST['search'])) {
+    setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+} else {
+    if (empty($_GET['pageno'])) {
+        unset($_COOKIE['search']);
+        setcookie('search', null, -1, '/');
+    }
+}
 
 ?>
 <?php
@@ -30,11 +42,12 @@ include("header.php")
             $pageno = 1;
         }
 
-        $no_of_records_per_page = 3;  // records 2 ခုဆီပြမှာ 
+        $no_of_records_per_page = 1;  // records 2 ခုဆီပြမှာ 
         // below formula is that start taking the frist record from db.
         $offset = ($pageno - 1) * $no_of_records_per_page;
 
-        if (empty($_POST["search"])) {
+
+        if (empty($_POST["search"]) && empty($_COOKIE["search"])) {
             $stmt  = $pdo->prepare('SELECT * FROM users ORDER BY id DESC');
             $stmt->execute();
             $rawResult = $stmt->fetchAll(); // get all records from db table 
@@ -44,8 +57,10 @@ include("header.php")
             $stmt  = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
             $stmt->execute();
             $result = $stmt->fetchAll();
-        } else {
-            $searchKey = $_POST["search"];
+        }
+        else {
+            $searchKey = $_POST["search"] ? $_POST["search"] : $_COOKIE["search"];
+
             $stmt  = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
             $stmt->execute();
             $rawResult = $stmt->fetchAll(); // get all records from db table 
@@ -55,6 +70,7 @@ include("header.php")
             $stmt  = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
             $stmt->execute();
             $result = $stmt->fetchAll();
+           
         }
 
 
@@ -110,21 +126,13 @@ include("header.php")
                     <li class="page-item <?php if ($pageno <= 1) {
                                                 echo "disabled";
                                             } ?>">
-                        <a class="page-link" href="?pageno=<?php if ($pageno <= 1) {
-                                                                echo "#";
-                                                            } else {
-                                                                echo $pageno - 1;
-                                                            } ?>">Previous</a>
+                        <a class="page-link" href="?pageno=<?php if ($pageno <= 1) {echo "#";} else {echo $pageno - 1;} ?>">Previous</a>
                     </li>
                     <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
                     <li class="page-item <?php if ($pageno >= $total_pages) {
                                                 echo "disabled";
                                             } ?>">
-                        <a class="page-link" href="?pageno=<?php if ($pageno >= $total_pages) {
-                                                                echo '#';
-                                                            } else {
-                                                                echo $pageno + 1;
-                                                            } ?>">Next</a>
+                        <a class="page-link" href="?pageno=<?php if ($pageno >= $total_pages) { echo '#';} else {echo $pageno + 1;} ?>">Next</a>
                     </li>
                     <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
                 </ul>

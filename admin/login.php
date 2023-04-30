@@ -6,9 +6,10 @@ if ($_POST) {
     $password = $_POST["password"];
     // echo $email. $password;
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stmt->bindValue(":email", $email);
-    $stmt->execute();
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email AND role=:role");
+    $stmt->execute(
+        array(":email"=>$email, ":role"=>1)
+    );
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -16,6 +17,7 @@ if ($_POST) {
         if ($user['password'] == $password) {
             $_SESSION["user_id"] = $user["id"];
             $_SESSION["username"] = $user["name"];
+            $_SESSION["role"] = 1;
             $_SESSION["logged_in"] = time();
             header("location:./index.php");
         }

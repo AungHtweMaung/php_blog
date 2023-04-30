@@ -4,6 +4,9 @@ session_start();
 if (empty($_SESSION["user_id"]) && empty($_SESSION["    ged_in"])) {
     header("location: ./login.php");
 }
+if ($_SESSION["role"] != 1) {
+    header("location: login.php");
+}
 
 if ($_POST) {
     $image = $_FILES["image"]["name"];  // get image name
