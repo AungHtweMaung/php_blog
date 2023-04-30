@@ -11,12 +11,12 @@ if ($_SESSION["role"] != 1) {
 
 // search key ရှိခဲ့ရင် cookie ထဲမှာ search value သိမ်းလိုက်မယ်
 if (!empty($_POST["search"])) {
-  setcookie("search", $_POST["search"], time() + (86400 * 30), "/");
+  setcookie("search", $_POST["search"], time() + (60*60*24), "/");
 } else {
   // pageno ရှိနေတုန်းဆိုရင် pagination အတွက် cookie ထဲက value လေးနဲ့ တူတဲ့ကောင်ကို ရှာပေးမယ် 
-    if (empty($_GET["pageno"])) {
-      unset($_COOKIE["search"]);
-      setcookie("search", null, -1, "/");
+  if (empty($_GET["pageno"])) {
+    unset($_COOKIE["search"]);
+    setcookie("search", null, -1, "/");
   }
 }
 
@@ -46,13 +46,13 @@ include("header.php");
       $pageno = 1;
     }
 
-    $no_of_records_per_page = 1;  // records 2 ခုဆီပြမှာ 
+    $no_of_records_per_page = 3;  // records 2 ခုဆီပြမှာ 
     // below formula is that start taking the frist record from db.
     $offset = ($pageno - 1) * $no_of_records_per_page;
 
     // no search value and no cookie value ဆိုရင် all records ကို pagination အတိုင်းပြမယ်
     if (empty($_POST["search"]) && empty($_COOKIE["search"])) {
-      $stmt  = $pdo->prepare('SELECT * FROM posts ORDER BY id DESC');
+      $stmt  = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
       $stmt->execute();
       $rawResult = $stmt->fetchAll(); // get all records from db table 
 
@@ -62,19 +62,19 @@ include("header.php");
       $stmt->execute();
       $result = $stmt->fetchAll();
     } else {
-        $searchKey = $_POST['search'] ? $_POST['search'] : $_COOKIE['search'];
-        // echo $searchKey;
-        $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
-        $stmt->execute();
-        $rawResult = $stmt->fetchAll(); // get all records from db table 
+      // !empty($_POST['search']) အဲ့တာမှ ရမှာ $_POST["search"] ဆိုရင် undefined error ပြနေအုန်းမှာ
+      $searchKey = !empty($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
+      $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC");
+      $stmt->execute();
+      $rawResult = $stmt->fetchAll(); // get all records from db table 
 
-        $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
-        // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
-        $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-      }
+      $total_pages = ceil(count($rawResult) / $no_of_records_per_page); // get total pages
+      // record 0 ကနေ တစ်ခါယူ 2ခု, နောက်တစ်ခါယူ 2 ခုဆီ ယူတယ်
+      $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$no_of_records_per_page");
+      $stmt->execute();
+      $result = $stmt->fetchAll();
     }
+
 
 
 

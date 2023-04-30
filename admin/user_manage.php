@@ -9,7 +9,7 @@ if ($_SESSION["role"] != 1) {
 }
 
 if (!empty($_POST['search'])) {
-    setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+    setcookie("search", $_POST["search"], time() + (60 * 60 * 24), "/");
 } else {
     if (empty($_GET['pageno'])) {
         unset($_COOKIE['search']);
@@ -42,7 +42,7 @@ include("header.php")
             $pageno = 1;
         }
 
-        $no_of_records_per_page = 1;  // records 2 ခုဆီပြမှာ 
+        $no_of_records_per_page = 3;  // records 2 ခုဆီပြမှာ 
         // below formula is that start taking the frist record from db.
         $offset = ($pageno - 1) * $no_of_records_per_page;
 
@@ -59,8 +59,7 @@ include("header.php")
             $result = $stmt->fetchAll();
         }
         else {
-            $searchKey = $_POST["search"] ? $_POST["search"] : $_COOKIE["search"];
-
+            $searchKey = !empty($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
             $stmt  = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
             $stmt->execute();
             $rawResult = $stmt->fetchAll(); // get all records from db table 
