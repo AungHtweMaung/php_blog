@@ -10,44 +10,47 @@ if ($_SESSION["role"] != 1) {
 }
 
 if ($_POST) {
-    $id = $_POST["id"];
-    $title = $_POST["title"];
-    $content = $_POST["content"];
-
-    if ($_FILES['image']['name'] != null) {
-        $image = $_FILES["image"]["name"];  // get image name
-        $target_file = "./image/" . $image;   // 
-        $tmp_name = $_FILES["image"]["tmp_name"];
-
-        $imageType = pathinfo($target_file, PATHINFO_EXTENSION);    // get file type extension
-
-        if ($imageType != 'jpg' && $imageType != 'jpeg' && $imageType != 'png') {
-            echo "wrong file type";
-        } else {
-            move_uploaded_file($tmp_name, $target_file);
-
-            $stmt = $pdo->prepare("UPDATE posts SET title='$title', content='$content', image='$image' WHERE id='$id'");
-            $result = $stmt->execute();
-
-            if ($result) {
-                echo "<script>alert('Successfully updated!');window.location.href='index.php'</script>";
-                
-            }
+    
+    if (empty($_POST["title"]) || empty($_POST["content"])) {
+        if (empty($_POST["title"])) {
+            $titleErr = "*Title can't be blank!";
+        }
+        if (empty($_POST["content"])) {
+            $contentErr = "*Content can't be blank!";
         }
     } else {
-        $stmt = $pdo->prepare("UPDATE posts SET title='$title', content='$content' WHERE id='$id'");
-        $result = $stmt->execute();
-        if ($result) {
-            echo "<script>alert('Successfully updated!');window.location.href='index.php'</script>";
+        $id = $_POST["id"];
+        $title = $_POST["title"];
+        $content = $_POST["content"];
 
+        if ($_FILES['image']['name'] != null) {
+            $image = $_FILES["image"]["name"];  // get image name
+            $target_file = "./image/" . $image;   // 
+            $tmp_name = $_FILES["image"]["tmp_name"];
+
+            $imageType = pathinfo($target_file, PATHINFO_EXTENSION);    // get file type extension
+
+            if ($imageType != 'jpg' && $imageType != 'jpeg' && $imageType != 'png') {
+                echo "wrong file type";
+            } else {
+                move_uploaded_file($tmp_name, $target_file);
+
+                $stmt = $pdo->prepare("UPDATE posts SET title='$title', content='$content', image='$image' WHERE id='$id'");
+                $result = $stmt->execute();
+
+                if ($result) {
+                    echo "<script>alert('Successfully updated!');window.location.href='index.php'</script>";
+                }
+            }
+        } else {
+            $stmt = $pdo->prepare("UPDATE posts SET title='$title', content='$content' WHERE id='$id'");
+            $result = $stmt->execute();
+            if ($result) {
+                echo "<script>alert('Successfully updated!');window.location.href='index.php'</script>";
+            }
         }
-
     }
-    
-    
-
-    
-} 
+}
 $id = $_GET["id"];
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE id=$id");
 $stmt->execute();
@@ -71,15 +74,16 @@ include("header.php");
     <div class="card p-3">
         <form method="post" enctype="multipart/form-data">
             <div class="mb-3">
-                <input type="hidden" name="id" value="<?php echo $result['id'];?>">
+                <input type="hidden" name="id" value="<?php echo $result['id']; ?>">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" name="title" id="title" value="<?php echo $result["title"] ?>" class="form-control" placeholder="" aria-describedby="helpId" required>
+                <p class="text-danger"><?php echo empty($titleErr) ? '' : $titleErr; ?></p>
+                <input type="text" name="title" id="title" value="<?php echo $result["title"] ?>" class="form-control" placeholder="" aria-describedby="helpId">
 
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
-                <textarea name="content" class="form-control" id="" cols="30" rows="12" required><?php echo $result["title"] ?></textarea>
-
+                <p class="text-danger"><?php echo empty($contentErr) ? '' : $contentErr; ?></p>
+                <textarea name="content" class="form-control" id="" cols="30" rows="12"><?php echo $result["title"] ?></textarea>
             </div>
             <div class="mb-3">
                 <img src="./image/<?php echo $result['image'] ?>" width="150px" height="150px" alt=""><br><br>

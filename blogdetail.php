@@ -34,18 +34,22 @@ if ($cmResult) {
 // exit();
 
 if ($_POST) {
-    $comment = $_POST["comment"];
-    $stmt = $pdo->prepare("INSERT INTO comments(content, author_id, post_id) VALUES(:content, :author_id, :post_id)");
-    $result = $stmt->execute(
-        array(
-            ":content" => $comment,
-            ":author_id" => $_SESSION["user_id"],
-            ":post_id" => $blogId,
-        )
-    );
+    if (empty(trim($_POST["comment"]))) {
+        $commentErr = "*Comment can't be blank!";
+    } else {
+        $comment = $_POST["comment"];
+        $stmt = $pdo->prepare("INSERT INTO comments(content, author_id, post_id) VALUES(:content, :author_id, :post_id)");
+        $result = $stmt->execute(
+            array(
+                ":content" => $comment,
+                ":author_id" => $_SESSION["user_id"],
+                ":post_id" => $blogId,
+            )
+        );
 
-    if ($result) {
-        header("location: blogdetail.php?id=$blogId");
+        if ($result) {
+            header("location: blogdetail.php?id=$blogId");
+        }
     }
 }
 
@@ -101,6 +105,7 @@ if ($_POST) {
                                         <!-- <img class="img-circle img-sm" src="dist/img/user3-128x128.jpg" alt="User Image"> -->
 
 
+
                                         <?php if ($cmResult) { ?>
 
                                             <?php foreach ($cmResult as $key => $value) { ?>
@@ -133,6 +138,7 @@ if ($_POST) {
                                     <form action="" method="post">
                                         <!-- <img class="img-fluid img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="Alt Text"> -->
                                         <!-- .img-push is used to add margin to elements next to floating images -->
+                                        <p class="text-danger"><?php echo empty($commentErr) ? '' : $commentErr; ?></p>
                                         <div class="img-push d-flex">
                                             <input type="text" name="comment" class="form-control form-control-sm mr-3" placeholder="Press enter to post comment">
                                             <input type="submit" value="Submit" class="btn btn-sm btn-primary">
@@ -171,6 +177,9 @@ if ($_POST) {
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+
+
+
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>

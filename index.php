@@ -18,7 +18,7 @@ if (!empty($_GET["pageno"])) {
 }
 
 $no_of_records_per_page = 6;
-$offset = ($pageno-1) * $no_of_records_per_page;
+$offset = ($pageno - 1) * $no_of_records_per_page;
 $total_pages = ceil(count($rawResult) / $no_of_records_per_page);
 
 $stmt  = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset, $no_of_records_per_page");
@@ -70,8 +70,8 @@ $result = $stmt->fetchAll(); // get all records from db table
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
-
-                                            <a href="blogdetail.php?id=<?php echo $value['id']; ?>"><img src="admin/image/<?php echo $value['image']; ?>" class="img-fluid pad" style="width: 100%; height: 220px !important;" alt="Photo"></a>
+                                            <!-- <input type="hidden"  > -->
+                                            <a href="blogdetail.php?id=<?php echo $value['id']; ?>" pageno="<?php echo $pageno; ?>"><img src="admin/image/<?php echo $value['image']; ?>" class="img-fluid pad" style="width: 100%; height: 220px !important;" alt="Photo"></a>
                                             <p>I took this photo this morning. What do you guys think?</p>
 
                                         </div>
@@ -96,12 +96,24 @@ $result = $stmt->fetchAll(); // get all records from db table
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination float-right">
                                     <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
-                                    <li class="page-item <?php if($pageno<=1){echo 'disabled';} ?>">
-                                        <a class="page-link" href="?pageno=<?php if($pageno<=1){echo '#';}else {echo $pageno-1;} ?>">Previous</a>
+                                    <li class="page-item <?php if ($pageno <= 1) {
+                                                                echo 'disabled';
+                                                            } ?>">
+                                        <a class="page-link" href="?pageno=<?php if ($pageno <= 1) {
+                                                                                echo '#';
+                                                                            } else {
+                                                                                echo $pageno - 1;
+                                                                            } ?>">Previous</a>
                                     </li>
                                     <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
-                                    <li class="page-item <?php if($pageno>=$total_pages){echo 'disabled';} ?>">
-                                        <a class="page-link" href="?pageno=<?php if($pageno>=$total_pages){echo '#';}else {echo $pageno+1;} ?>">Next</a>
+                                    <li class="page-item <?php if ($pageno >= $total_pages) {
+                                                                echo 'disabled';
+                                                            } ?>">
+                                        <a class="page-link" href="?pageno=<?php if ($pageno >= $total_pages) {
+                                                                                echo '#';
+                                                                            } else {
+                                                                                echo $pageno + 1;
+                                                                            } ?>">Next</a>
                                     </li>
                                     <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
                                 </ul>
@@ -131,6 +143,8 @@ $result = $stmt->fetchAll(); // get all records from db table
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+
+    
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>

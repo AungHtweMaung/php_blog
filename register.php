@@ -2,31 +2,46 @@
 session_start();
 require("config/config.php");
 if ($_POST) {
-    $name = $_POST["name"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $role = 0;
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stmt->bindValue(":email", $email);
-    $stmt->execute();
-    
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    // echo "<pre>";    
-    if ($user) {
-        echo "<script>alert('Email already exist');</script>";
+    if (empty($_POST["name"]) || empty($_POST["email"])  || empty($_POST["password"]) || strlen($_POST["password"]) < 4) {
+        if (empty($_POST["name"])) {
+            $nameErr = "*Name can't be blank!";
+        }
+        if (empty($_POST["email"])) {
+            $emailErr = "*Email can't be blank!";
+        }
+        if (strlen($_POST["password"]) < 4) {
+            $passwordErr = "*password must be at least 4 characters";
+        }
+        if (empty($_POST["password"])) {
+            $passwordErr = "*password can't be blank!";
+        }
     } else {
-        $stmt = $pdo->prepare("INSERT INTO users(name, email, password, role) VALUES(:name, :email, :password, :role)");
-        $result = $stmt->execute(
-            array(
-                ":name"=>$name,
-                ":email"=>$email,
-                ":password"=>$password,
-                ":role"=>$role
-            )
-        );
-        if ($result) {
-            echo "<script>alert('Registered Successfully! Please Login');window.location.href='login.php'</script>";
+        $name = $_POST["name"];
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+        $role = 0;
+
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->bindValue(":email", $email);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        // echo "<pre>";    
+        if ($user) {
+            echo "<script>alert('Email already exist');</script>";
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO users(name, email, password, role) VALUES(:name, :email, :password, :role)");
+            $result = $stmt->execute(
+                array(
+                    ":name" => $name,
+                    ":email" => $email,
+                    ":password" => $password,
+                    ":role" => $role
+                )
+            );
+            if ($result) {
+                echo "<script>alert('Registered Successfully! Please Login');window.location.href='login.php'</script>";
+            }
         }
     }
 }
@@ -62,7 +77,8 @@ if ($_POST) {
 
                 <form action="register.php" method="post">
                     <div class="input-group mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Name" required>
+                        <p class="text-danger w-100"><?php echo empty($nameErr) ? '' : $nameErr; ?></p>
+                        <input type="text" name="name" class="form-control" placeholder="Name">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -70,7 +86,8 @@ if ($_POST) {
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        <p class="text-danger w-100"><?php echo empty($emailErr) ? '' : $emailErr; ?></p>
+                        <input type="email" name="email" class="form-control" placeholder="Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -78,7 +95,8 @@ if ($_POST) {
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                        <p class="text-danger w-100"><?php echo empty($passwordErr) ? '' : $passwordErr; ?></p>
+                        <input type="password" name="password" class="form-control" placeholder="Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>

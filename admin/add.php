@@ -9,48 +9,54 @@ if ($_SESSION["role"] != 1) {
 }
 
 if ($_POST) {
-    $image = $_FILES["image"]["name"];  // get image name
-    $target_file = "./image/". $image;   // 
-    $tmp_name = $_FILES["image"]["tmp_name"];
 
-    $imageType = pathinfo($target_file, PATHINFO_EXTENSION);    // get file type extension
-
-    if ($imageType != 'jpg' && $imageType != 'jpeg' && $imageType != 'png') {
-        echo "Image must be png, jpg, or jpeg.";
+    if (empty($_POST["title"]) || empty($_POST["content"])  || empty($_FILES["image"])) {
+        if (empty($_POST["title"])) {
+            $titleErr = "*Title can't be blank!";
+        }
+        if (empty($_POST["content"])) {
+            $contentErr = "*Content can't be blank!";
+        }
+        if (empty($_FILES["image"])) {
+            $imageErr = "*Image can't be blank!";
+        }
     } else {
-        $title = $_POST['title'];
-        $content = $_POST["content"];
-        move_uploaded_file($tmp_name, $target_file);
+        $image = $_FILES["image"]["name"];  // get image name
+        $target_file = "./image/" . $image;   // 
+        $tmp_name = $_FILES["image"]["tmp_name"];
 
-        $stmt = $pdo->prepare("INSERT INTO posts(title, content, image, author_id) VALUES(:title, :content, :image, :author_id)");
-        $result = $stmt->execute(
-            array(
-                ":title"=>$title,
-                ":content"=>$content,
-                ":image"=>$image,
-                ":author_id"=>$_SESSION["user_id"]
-            )
+        $imageType = pathinfo($target_file, PATHINFO_EXTENSION);    // get file type extension
+
+        if ($imageType != 'jpg' && $imageType != 'jpeg' && $imageType != 'png') {
+            echo "<script>alert('Image must be png, jpg, or jpeg');</script>";
+        } else {
+            $title = $_POST['title'];
+            $content = $_POST["content"];
+            move_uploaded_file($tmp_name, $target_file);
+
+            $stmt = $pdo->prepare("INSERT INTO posts(title, content, image, author_id) VALUES(:title, :content, :image, :author_id)");
+            $result = $stmt->execute(
+                array(
+                    ":title" => $title,
+                    ":content" => $content,
+                    ":image" => $image,
+                    ":author_id" => $_SESSION["user_id"]
+                )
             );
 
-        if ($result) {
-            echo "<script>alert('Successfully added!');</script>";
-            header("location:./index.php");
+            if ($result) {
+                echo "<script>alert('Successfully added!');window.location.href='index.php';</script>";
+            }
         }
-
     }
-
-
-
-    
-    
 }
 
 
 ?>
 
-<?php 
+<?php
 $title = "Create blog";
-include("header.php") 
+include("header.php")
 ?>
 
 
@@ -61,17 +67,20 @@ include("header.php")
         <form action="add.php" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
-                <input type="text" name="title" id="title" class="form-control" placeholder="" aria-describedby="helpId" required>
+                <p class="text-danger"><?php echo empty($titleErr) ? '' : $titleErr; ?></p>
+                <input type="text" name="title" id="title" class="form-control" placeholder="" aria-describedby="helpId">
 
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
-                <textarea name="content" class="form-control" id="" cols="30" rows="12" required></textarea>
+                <p class="text-danger"><?php echo empty($contentErr) ? '' : $contentErr; ?></p>
+                <textarea name="content" class="form-control" id="" cols="30" rows="12"></textarea>
 
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
-                <input type="file" name="image" id="image" class="" placeholder="" aria-describedby="helpId" required>
+                <p class="text-danger"><?php echo empty($imageErr) ? '' : $imageErr; ?></p>
+                <input type="file" name="image" id="image" class="" placeholder="" aria-describedby="helpId">
             </div>
             <div>
                 <input type="submit" value="Submit" class="btn btn-success">
