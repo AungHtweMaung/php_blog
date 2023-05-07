@@ -11,7 +11,9 @@
 <body>
     <?php
     
-    echo $_COOKIE["search"]
+        $pass = password_hash("admin", PASSWORD_DEFAULT);
+        echo $pass;
+        // echo password_verify('admin', $pass);
     ?>
     
 </body>

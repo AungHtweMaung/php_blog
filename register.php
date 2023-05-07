@@ -18,7 +18,7 @@ if ($_POST) {
     } else {
         $name = $_POST["name"];
         $email = $_POST["email"];
-        $password = $_POST["password"];
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
         $role = 0;
 
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
