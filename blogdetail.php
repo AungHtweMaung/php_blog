@@ -1,6 +1,7 @@
 <?php
 session_start();
 require("config/config.php");
+require("config/common.php");
 
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
@@ -85,12 +86,12 @@ if ($_POST) {
                         <div class="col-md-12">
                             <!-- Box Comment -->
                             <div class="card card-widget">
-                                <h2 class="text-center"><?php echo $result['title'] ?></h2>
+                                <h2 class="text-center"><?php echo escape($result['title']); ?></h2>
                                 <div class="card-body">
                                     <div>
-                                        <img src="admin/image/<?php echo $result['image']; ?>" class="img-fluid pad" alt="Photo">
+                                        <img src="admin/image/<?php echo escape($result['image']); ?>" class="img-fluid pad" alt="Photo">
                                     </div>
-                                    <p><?php echo $result['content'] ?></p>
+                                    <p><?php echo escape($result['content']); ?></p>
                                     <div>
                                         <a type="button" href="index.php" class="btn btn-primary px-4">Back</a>
                                     </div>
@@ -114,9 +115,9 @@ if ($_POST) {
                                                         <!-- $key က ရှိသလောက် 0, 1, 2 တစ်ခုဆီဖြစ်မယ်
                                                             အဲ့တော့ authorResult ထဲက record တွေထဲက တစ်ကြောင်းချင်းဆီက name တွေကို ဖော်ပြပေးတယ်။ 
                                                         -->
-                                                        <span style="font-size: 20px;"><?php echo $authorResult[$key]["name"]; ?></span>
+                                                        <span style="font-size: 20px;"><?php echo escape($authorResult[$key]["name"]); ?></span>
                                                         <span class="text-muted float-right"><?php echo date("Y-m-d h:ia", strtotime($value["created_at"])) ?></span><br>
-                                                        <?php echo $value['content']; ?>
+                                                        <?php echo escape($value['content']); ?>
                                                     </span><!-- /.username -->
                                                 </div>
                                         <?php
@@ -138,6 +139,7 @@ if ($_POST) {
                                     <form action="" method="post">
                                         <!-- <img class="img-fluid img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="Alt Text"> -->
                                         <!-- .img-push is used to add margin to elements next to floating images -->
+                                        <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                                         <p class="text-danger"><?php echo empty($commentErr) ? '' : $commentErr; ?></p>
                                         <div class="img-push d-flex">
                                             <input type="text" name="comment" class="form-control form-control-sm mr-3" placeholder="Press enter to post comment">

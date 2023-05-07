@@ -1,7 +1,10 @@
 <?php
 
-require("../config/config.php");
 session_start();
+require("../config/config.php");
+require("../config/common.php");
+
+
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
 }
@@ -9,8 +12,8 @@ if ($_SESSION["role"] != 1) {
     header("location: login.php");
 }
 
-if ($_POST) {
-    
+if (isset($_POST["submit"])) {
+
     if (empty($_POST["title"]) || empty($_POST["content"])) {
         if (empty($_POST["title"])) {
             $titleErr = "*Title can't be blank!";
@@ -73,25 +76,26 @@ include("header.php");
 <div class="col-md-12">
     <div class="card p-3">
         <form method="post" enctype="multipart/form-data">
+            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
             <div class="mb-3">
                 <input type="hidden" name="id" value="<?php echo $result['id']; ?>">
                 <label for="title" class="form-label">Title</label>
                 <p class="text-danger"><?php echo empty($titleErr) ? '' : $titleErr; ?></p>
-                <input type="text" name="title" id="title" value="<?php echo $result["title"] ?>" class="form-control" placeholder="" aria-describedby="helpId">
+                <input type="text" name="title" id="title" value="<?php echo escape($result["title"]); ?>" class="form-control" placeholder="" aria-describedby="helpId">
 
             </div>
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
                 <p class="text-danger"><?php echo empty($contentErr) ? '' : $contentErr; ?></p>
-                <textarea name="content" class="form-control" id="" cols="30" rows="12"><?php echo $result["title"] ?></textarea>
+                <textarea name="content" class="form-control" id="" cols="30" rows="12"><?php echo escape($result["content"]) ?></textarea>
             </div>
             <div class="mb-3">
-                <img src="./image/<?php echo $result['image'] ?>" width="150px" height="150px" alt=""><br><br>
+                <img src="./image/<?php echo escape($result['image']); ?>" width="150px" height="150px" alt=""><br><br>
                 <label for="image" class="form-label">Image</label>
                 <input type="file" name="image" id="image" class="" placeholder="" aria-describedby="helpId">
             </div>
             <div>
-                <input type="submit" value="Submit" class="btn btn-success">
+                <input type="submit" name="submit" value="Submit" class="btn btn-success">
                 <a href="./index.php" class="btn btn-warning">Back</a>
             </div>
         </form>

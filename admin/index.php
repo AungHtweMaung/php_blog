@@ -1,6 +1,8 @@
 <?php
-require("../config/config.php");
 session_start();
+require("../config/config.php");
+require("../config/common.php");
+
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
   header("location: ./login.php");
 }
@@ -101,8 +103,8 @@ include("header.php");
           ?>
               <tr>
                 <td><?php echo $i ?></td>
-                <td><?php echo $value['title'] ?></td>
-                <td><?php echo substr($value['content'], 0, 100) ?></td>
+                <td><?php echo escape($value['title']) ?></td>
+                <td><?php echo escape(substr($value['content'], 0, 100)) ?></td>
                 <td style="width: 15%;">
                   <a href="./edit.php?id=<?php echo $value['id']; ?>"  type="button" class="btn btn-warning">Edit</a>
                   <a href="./delete.php?id=<?php echo $value['id']; ?>" onclick="return confirm('Are you sure you want to delete?');" type="button" class="btn btn-danger">Delete</a>

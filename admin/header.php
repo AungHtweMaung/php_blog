@@ -11,8 +11,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <title><?php echo $title; ?></title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
@@ -39,18 +38,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <i class="fas fa-search"></i>
                     </a>
                     <?php
-                        // $_SERVER => current url path တွေကို ယူနိုင်တဲ့ superglobal variable.
-                        // array ကို explode နဲ့ခွဲထုတ်ပြီး နောက်ဆုံး item ကိုယူလိုက်တယ်။  
-                       $link = $_SERVER["REQUEST_URI"];
-                       $link_array = explode("/", $link);
-                       $page = end($link_array);
-                       
+                    // $_SERVER => current url path တွေကို ယူနိုင်တဲ့ superglobal variable.
+                    // array ကို explode နဲ့ခွဲထုတ်ပြီး နောက်ဆုံး item ကိုယူလိုက်တယ်။  
+                    $link = $_SERVER["REQUEST_URI"];
+                    $link_array = explode("/", $link);
+                    $page = end($link_array);
+
                     ?>
                     <div class="navbar-search-block">
-                        <form class="form-inline" action="<?php echo $page=='index.php'? 'index.php': 'user_manage.php'; ?>" method="post">
+                        <form class="form-inline" action="<?php echo $page == 'index.php' ? 'index.php' : 'user_manage.php'; ?>" method="post">
+                            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token'] ?>">
                             <div class="input-group input-group-sm">
-                                <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search"
-                                    aria-label="Search">
+                                <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
                                 <div class="input-group-append">
                                     <button class="btn btn-navbar" type="submit">
                                         <i class="fas fa-search"></i>
@@ -71,8 +70,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="index.php" class="brand-link">
-                <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
-                    style="opacity: .8">
+                <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">Blog Panel</span>
             </a>
 
@@ -91,8 +89,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item">
@@ -121,4 +118,3 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container-fluid">
-                    

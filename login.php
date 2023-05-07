@@ -1,6 +1,7 @@
 <?php
 session_start();
 require("config/config.php");
+require("config/common.php");
 if ($_POST) {
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -51,9 +52,10 @@ if ($_POST) {
         <!-- /.login-logo -->
         <div class="card">
             <div class="card-body login-card-body">
-               <h4 class="text-center">Sign in</h4>
+                <h4 class="text-center">Sign in</h4>
 
                 <form action="login.php" method="post">
+                    <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email">
                         <div class="input-group-append">
@@ -70,13 +72,13 @@ if ($_POST) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="">
                         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         <a href="register.php" class="btn btn-default btn-block">Register</a>
                     </div>
                     <!-- /.col -->
-                    
+
                 </form>
 
                 <!-- /.social-auth-links -->

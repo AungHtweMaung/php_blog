@@ -1,7 +1,8 @@
 <?php
-
-require("../config/config.php");
 session_start();
+require("../config/config.php");
+require("../config/common.php");
+
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
 }
@@ -9,7 +10,7 @@ if ($_SESSION["role"] != 1) {
     header("location: login.php");
 }
 
-if ($_POST) {
+if (isset($_POST["submit"])) {
     if (empty($_POST["name"]) || empty($_POST["email"])) {
         if (empty($_POST["name"])) {
             $nameErr = "*Name can't be blank!";
@@ -71,18 +72,6 @@ $stmt->execute();
 
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// if ($result) {
-
-// }
-
-// if ($ans > 0) {
-//     
-// }
-// echo "<pre>";
-// var_dump($result);
-
-
-
 ?>
 
 <?php
@@ -103,6 +92,7 @@ include("header.php") ?>
 
 
         <form method="post" action="" enctype="multipart/form-data">
+            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
             <div class="mb-3">
                 <label>User id</label><br>
                 <p style="font-weight: bold;"><?php echo $result["id"] ?></p>
@@ -112,13 +102,13 @@ include("header.php") ?>
                 <input type="hidden" name="id" value="<?php echo $result['id']; ?>">
                 <label for="name" class="form-label">Name</label>
                 <p class="text-danger"><?php echo empty($nameErr) ? '' : $nameErr; ?></p>
-                <input type="text" name="name" id="name" value="<?php echo $result["name"] ?>" class="form-control" aria-describedby="helpId">
+                <input type="text" name="name" id="name" value="<?php echo escape($result["name"]) ?>" class="form-control" aria-describedby="helpId">
 
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <p class="text-danger"><?php echo empty($emailErr) ? '' : $emailErr; ?></p>
-                <input name="email" class="form-control" id="" value="<?php echo $result["email"] ?>">
+                <input name="email" class="form-control" id="" value="<?php echo escape($result["email"]) ?>">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
@@ -133,7 +123,7 @@ include("header.php") ?>
                 <label class="form-check-label" for="role">Admin</label>
             </div>
             <div>
-                <input type="submit" value="Submit" class="btn btn-success">
+                <input type="submit" name="submit" value="Submit" class="btn btn-success">
                 <a href="./user_manage.php" class="btn btn-warning">Back</a>
             </div>
         </form>

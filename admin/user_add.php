@@ -1,6 +1,7 @@
 <?php
-require("../config/config.php");
 session_start();
+require("../config/config.php");
+require("../config/common.php");
 if (empty($_SESSION["user_id"]) && empty($_SESSION["    ged_in"])) {
     header("location: ./login.php");
 }
@@ -8,15 +9,15 @@ if ($_SESSION["role"] != 1) {
     header("location: login.php");
 }
 
-if ($_POST) {
-    if (empty($_POST["name"]) || empty($_POST["email"])  || empty($_POST["password"]) || strlen($_POST["password"])<4) {
+if (isset($_POST["submit"])) {
+    if (empty($_POST["name"]) || empty($_POST["email"])  || empty($_POST["password"]) || strlen($_POST["password"]) < 4) {
         if (empty($_POST["name"])) {
             $nameErr = "*Name can't be blank!";
         }
         if (empty($_POST["email"])) {
             $emailErr = "*Email can't be blank!";
         }
-        if (strlen($_POST["password"])<4) {
+        if (strlen($_POST["password"]) < 4) {
             $passwordErr = "*password must be at least 4 characters";
         }
         if (empty($_POST["password"])) {
@@ -69,7 +70,8 @@ include("header.php")
 
 <div class="col-md-12">
     <div class="card p-3">
-        <form action="user_add.php" method="post" enctype="multipart/form-data">
+        <form action="" method="post" enctype="multipart/form-data">
+            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
                 <p class="text-danger"><?php echo empty($nameErr) ? '' : $nameErr; ?></p>
@@ -91,7 +93,7 @@ include("header.php")
                 <label class="form-check-label" for="role">Admin</label>
             </div>
             <div>
-                <input type="submit" value="Submit" class="btn btn-success">
+                <input type="submit" name="submit" value="Submit" class="btn btn-success">
                 <a href="./user_manage.php" class="btn btn-warning">Back</a>
             </div>
         </form>

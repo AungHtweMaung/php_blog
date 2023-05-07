@@ -1,6 +1,8 @@
 <?php
-require("../config/config.php");
 session_start();
+require("../config/config.php");
+require("../config/common.php");
+
 if (empty($_SESSION["user_id"]) && empty($_SESSION["    ged_in"])) {
     header("location: ./login.php");
 }
@@ -8,8 +10,7 @@ if ($_SESSION["role"] != 1) {
     header("location: login.php");
 }
 
-if ($_POST) {
-
+if (isset($_POST["submit"])) {  
     if (empty($_POST["title"]) || empty($_POST["content"])  || empty($_FILES["image"])) {
         if (empty($_POST["title"])) {
             $titleErr = "*Title can't be blank!";
@@ -64,7 +65,9 @@ include("header.php")
 
 <div class="col-md-12">
     <div class="card p-3">
+        
         <form action="add.php" method="post" enctype="multipart/form-data">
+            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <p class="text-danger"><?php echo empty($titleErr) ? '' : $titleErr; ?></p>
@@ -83,7 +86,7 @@ include("header.php")
                 <input type="file" name="image" id="image" class="" placeholder="" aria-describedby="helpId">
             </div>
             <div>
-                <input type="submit" value="Submit" class="btn btn-success">
+                <input type="submit" name="submit" value="Submit" class="btn btn-success">
                 <a href="./index.php" class="btn btn-warning">Back</a>
             </div>
         </form>

@@ -2,6 +2,8 @@
 
 session_start();
 require("config/config.php");
+require("config/common.php");
+
 if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
 }
@@ -65,14 +67,14 @@ $result = $stmt->fetchAll(); // get all records from db table
                                     <!-- Box Comment -->
                                     <div class="card card-widget">
                                         <div class="card-header ">
-                                            <h4 class=" w-100 text-center"><?php echo $value["title"] ?></h4>
+                                            <h4 class=" w-100 text-center"><?php echo escape($value["title"]) ?></h4>
                                             <!-- /.card-tools -->
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
                                             <!-- <input type="hidden"  > -->
-                                            <a href="blogdetail.php?id=<?php echo $value['id']; ?>" pageno="<?php echo $pageno; ?>"><img src="admin/image/<?php echo $value['image']; ?>" class="img-fluid pad" style="width: 100%; height: 220px !important;" alt="Photo"></a>
-                                            <p>I took this photo this morning. What do you guys think?</p>
+                                            <a href="blogdetail.php?id=<?php echo $value['id']; ?>"><img src="admin/image/<?php echo escape($value['image']); ?>" class="img-fluid pad" style="width: 100%; height: 220px !important;" alt="Photo"></a>
+                                            <p><?php echo escape($value["title"]) ?></p>
 
                                         </div>
                                         <!-- /.card-body -->
@@ -133,7 +135,8 @@ $result = $stmt->fetchAll(); // get all records from db table
             <div class="float-right d-none d-sm-block mr-5">
                 <a href="logout.php" class="btn btn-default">Logout</a>
             </div>
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+            reserved.
         </footer>
 
         <!-- Control Sidebar -->
@@ -144,7 +147,7 @@ $result = $stmt->fetchAll(); // get all records from db table
     </div>
     <!-- ./wrapper -->
 
-    
+
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>

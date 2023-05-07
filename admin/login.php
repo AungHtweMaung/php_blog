@@ -1,6 +1,8 @@
 <?php
 session_start();
 require("../config/config.php");
+require("../config/common.php");
+
 if ($_POST) {
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -8,11 +10,11 @@ if ($_POST) {
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email AND role=:role");
     $stmt->execute(
-        array(":email"=>$email, ":role"=>1)
+        array(":email" => $email, ":role" => 1)
     );
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($user) {
         if (password_verify($password, $user['password'])) {
             $_SESSION["user_id"] = $user["id"];
@@ -55,6 +57,7 @@ if ($_POST) {
                 <p class="login-box-msg">Sign in to start your session</p>
 
                 <form action="login.php" method="post">
+                    <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email">
                         <div class="input-group-append">
@@ -111,5 +114,3 @@ if ($_POST) {
 </body>
 
 </html>
-
-
