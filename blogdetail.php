@@ -8,12 +8,12 @@ if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
 }
 
 $blogId = $_GET["id"];
-$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=$blogId;" );
+$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=$blogId;");
 $stmt->execute();
 // blogId ရှိရင် rowCount() သည် 1 ဖြစ်မယ်။ အဲ့တာဆို အလုပ်လုပ်မယ်,
 // if the post id doesn't exist, redirect 404 page
 if ($stmt->rowCount() > 0) {
-    
+
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $cmstmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
@@ -82,6 +82,7 @@ if ($stmt->rowCount() > 0) {
 </head>
 
 <body class="hold-transition sidebar-mini">
+    <?php require("./navbar.html") ?>
     <div class="">
         <!-- Content Wrapper. Contains page content -->
         <div class="">
@@ -114,8 +115,8 @@ if ($stmt->rowCount() > 0) {
 
 
 
-                                        <?php 
-                                        
+                                        <?php
+
                                         if ($cmResult) { ?>
 
                                             <?php foreach ($cmResult as $key => $value) { ?>

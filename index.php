@@ -50,6 +50,7 @@ $result = $stmt->fetchAll(); // get all records from db table
 </head>
 
 <body class="hold-transition sidebar-mini">
+    <?php require("./navbar.html") ?>
     <div class="">
         <!-- Content Wrapper. Contains page content -->
         <div class="">
@@ -130,11 +131,11 @@ $result = $stmt->fetchAll(); // get all records from db table
         </div>
         <!-- /.content-wrapper -->
 
-        <footer class="main-footer ml-0">
-            <div class="float-right d-none d-sm-block mr-5">
-                <a href="logout.php" class="btn btn-default">Logout</a>
-            </div>
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+        <footer class="main-footer ml-0 text-center">
+            <!-- <div class="float-right d-block mr-5">
+                <a href="logout.php" onclick="return confirm('Do you want to logout?');" class="btn btn-default">Logout</a>
+            </div> -->
+            <strong>Copyright &copy; 2014-2021 <a href="#">Simple Blog</a>.</strong> All rights
             reserved.
         </footer>
 
