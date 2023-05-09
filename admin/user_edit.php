@@ -70,7 +70,11 @@ $id = $_GET["id"];
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id=$id");
 $stmt->execute();
 
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
+if ($stmt->rowCount()>0) {
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+} else {
+    header("location:404_page.html");
+}
 
 ?>
 
