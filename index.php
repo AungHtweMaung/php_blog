@@ -19,7 +19,7 @@ if (!empty($_GET["pageno"])) {
     $pageno = 1;
 }
 
-$no_of_records_per_page = 6;
+$no_of_records_per_page = 3;
 $offset = ($pageno - 1) * $no_of_records_per_page;
 $total_pages = ceil(count($rawResult) / $no_of_records_per_page);
 
@@ -67,14 +67,13 @@ $result = $stmt->fetchAll(); // get all records from db table
                                     <!-- Box Comment -->
                                     <div class="card card-widget">
                                         <div class="card-header ">
-                                            <h4 class=" w-100 text-center"><?php echo escape($value["title"]) ?></h4>
+                                            <h5 class=" w-100 text-center"><?php echo escape($value["title"]) ?></h5>
                                             <!-- /.card-tools -->
                                         </div>
                                         <!-- /.card-header -->
                                         <div class="card-body">
                                             <!-- <input type="hidden"  > -->
                                             <a href="blogdetail.php?id=<?php echo $value['id']; ?>"><img src="admin/image/<?php echo escape($value['image']); ?>" class="img-fluid pad" style="width: 100%; height: 220px !important;" alt="Photo"></a>
-                                            <p><?php echo escape($value["title"]) ?></p>
 
                                         </div>
                                         <!-- /.card-body -->

@@ -85,13 +85,13 @@ if ($_POST) {
                     <div class="row">
                         <div class="col-md-12">
                             <!-- Box Comment -->
-                            <div class="card card-widget">
+                            <div class="card card-widget p-4">
                                 <h2 class="text-center"><?php echo escape($result['title']); ?></h2>
                                 <div class="card-body">
-                                    <div>
-                                        <img src="admin/image/<?php echo escape($result['image']); ?>" class="img-fluid pad" alt="Photo">
+                                    <div class="mb-3">
+                                        <img src="admin/image/<?php echo escape($result['image']); ?>" class="w-100 img-fluid pad" alt="Photo">
                                     </div>
-                                    <p><?php echo escape($result['content']); ?></p>
+                                    <p style="font-size: 20px; text-align: justify;"> <?php echo escape($result['content']); ?></p>
                                     <div>
                                         <a type="button" href="index.php" class="btn btn-primary px-4">Back</a>
                                     </div>
