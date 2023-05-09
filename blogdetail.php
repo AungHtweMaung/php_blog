@@ -7,51 +7,58 @@ if (empty($_SESSION["user_id"]) && empty($_SESSION["logged_in"])) {
     header("location: ./login.php");
 }
 
-$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=" . $_GET["id"]);
-$stmt->execute();
-$result = $stmt->fetch(PDO::FETCH_ASSOC);
-
 $blogId = $_GET["id"];
+$stmt = $pdo->prepare("SELECT * FROM posts WHERE id=$blogId;" );
+$stmt->execute();
+// blogId ရှိရင် rowCount() သည် 1 ဖြစ်မယ်။ အဲ့တာဆို အလုပ်လုပ်မယ်,
+// if the post id doesn't exist, redirect 404 page
+if ($stmt->rowCount() > 0) {
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$cmstmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
-$cmstmt->execute();
-$cmResult = $cmstmt->fetchAll();
+    $cmstmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
+    $cmstmt->execute();
+    $cmResult = $cmstmt->fetchAll();
 
-$authorResult = [];
+    $authorResult = [];
 
-if ($cmResult) {
-    // comment အားလုံးကို loop ပတ်ပြီး ထုတ်ဖို့။ 
-    // author name တွေကိုပြရအောင်လို့ author_id တွေကို သက်သက်ထည့်ထားလိုက်တာ။ 
-    foreach ($cmResult as  $value) {
-        $authorId = $value["author_id"];
-        $author_stmt = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
-        $author_stmt->execute();
-        $authorResult[] = $author_stmt->fetch(PDO::FETCH_ASSOC);
-        // array_push($authorResult, $author_stmt->fetch(PDO::FETCH_ASSOC));
-    }
-}
-// echo "<pre>";
-// print_r($authorResult);
-// exit();
-
-if ($_POST) {
-    if (empty(trim($_POST["comment"]))) {
-        $commentErr = "*Comment can't be blank!";
-    } else {
-        $comment = $_POST["comment"];
-        $stmt = $pdo->prepare("INSERT INTO comments(content, author_id, post_id) VALUES(:content, :author_id, :post_id)");
-        $result = $stmt->execute(
-            array(
-                ":content" => $comment,
-                ":author_id" => $_SESSION["user_id"],
-                ":post_id" => $blogId,
-            )
-        );
-
-        if ($result) {
-            header("location: blogdetail.php?id=$blogId");
+    if ($cmResult) {
+        // comment အားလုံးကို loop ပတ်ပြီး ထုတ်ဖို့။ 
+        // author name တွေကိုပြရအောင်လို့ author_id တွေကို သက်သက်ထည့်ထားလိုက်တာ။ 
+        foreach ($cmResult as  $value) {
+            $authorId = $value["author_id"];
+            $author_stmt = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
+            $author_stmt->execute();
+            $authorResult[] = $author_stmt->fetch(PDO::FETCH_ASSOC);
+            // array_push($authorResult, $author_stmt->fetch(PDO::FETCH_ASSOC));
         }
     }
+    // echo "<pre>";
+    // print_r($authorResult);
+    // exit();
+
+    // post comment
+    if ($_POST) {
+        if (empty(trim($_POST["comment"]))) {
+            $commentErr = "*Comment can't be blank!";
+        } else {
+            $comment = $_POST["comment"];
+            $stmt = $pdo->prepare("INSERT INTO comments(content, author_id, post_id) VALUES(:content, :author_id, :post_id)");
+            $result = $stmt->execute(
+                array(
+                    ":content" => $comment,
+                    ":author_id" => $_SESSION["user_id"],
+                    ":post_id" => $blogId,
+                )
+            );
+
+            if ($result) {
+                header("location: blogdetail.php?id=$blogId");
+            }
+        }
+    }
+} else {
+    header("location:404_page.html");
 }
 
 ?>
@@ -107,7 +114,9 @@ if ($_POST) {
 
 
 
-                                        <?php if ($cmResult) { ?>
+                                        <?php 
+                                        
+                                        if ($cmResult) { ?>
 
                                             <?php foreach ($cmResult as $key => $value) { ?>
                                                 <div class="comment-text mb-3 " style="margin-left: 0;">
