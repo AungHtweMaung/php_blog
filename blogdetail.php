@@ -135,10 +135,6 @@ if ($stmt->rowCount() > 0) {
                                         }
                                         ?>
 
-
-
-
-
                                         <!-- /.comment-text -->
                                     </div>
                                     <!-- /.card-comment -->
@@ -175,10 +171,10 @@ if ($stmt->rowCount() > 0) {
         </div>
         <!-- /.content-wrapper -->
 
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-block">
+        <footer class="main-footer ml-0 text-center">
+            <!-- <div class="float-right d-none d-sm-block">
                 <a href="./logout.php" class="btn btn-default">Logout</a>
-            </div>
+            </div> -->
             <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
         </footer>
 
